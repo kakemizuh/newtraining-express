@@ -118,8 +118,8 @@ const useItem = async (
   dbConnection: PoolConnection
 ): Promise<any> => {
   const STATUS_MAX_VALUE: number = 200;
-  const ITEMTYPE_HP_POTION: number = 1;
-  const ITEMTYPE_MP_POTION: number = 2;
+  const ITEM_TYPE_HP_POTION: number = 1;
+  const ITEM_TYPE_MP_POTION: number = 2;
   const useUserItem: UserItem = {
     userId: userId,
     itemId: itemId,
@@ -135,12 +135,12 @@ const useItem = async (
   if(itemData === undefined){
     throw new Error("no itemData");
   }
-  //itemtypeによってステータスを格納
+  //itemTypeによってステータスを格納
   let status: number = 0;
-  if(itemData.itemType === ITEMTYPE_HP_POTION){
+  if(itemData.itemType === ITEM_TYPE_HP_POTION){
     status = userData.hp!;
   }
-  else if(itemData.itemType === ITEMTYPE_MP_POTION){
+  else if(itemData.itemType === ITEM_TYPE_MP_POTION){
     status = userData.mp!;
   }
   //userItemデータの存在チェック
@@ -170,10 +170,10 @@ const useItem = async (
   userItemData.itemCount! -= useItemCount;
 
   //算出したステータスの値を、アイテムタイプによって決まるステータスに格納
-  if(itemData.itemType === ITEMTYPE_HP_POTION){
+  if(itemData.itemType === ITEM_TYPE_HP_POTION){
     userData.hp = status;
   }
-  else if(itemData.itemType === ITEMTYPE_MP_POTION){
+  else if(itemData.itemType === ITEM_TYPE_MP_POTION){
     userData.mp = status;
   }
 

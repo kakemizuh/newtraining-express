@@ -27,7 +27,7 @@ const getUserItems = async (
   return result;
 };
 /**
- * 指定したuseridとitemidのuserItemデータを取得する
+ * 指定したuserIdとitemIdのuserItemデータを取得する
  * @param data 
  * @param dbConnection 
  * @returns 
