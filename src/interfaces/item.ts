@@ -4,7 +4,7 @@ interface Item {
     heal?: number;
     price?: number;
     percent?: number;
-    itemtype?: number;
+    itemType?: number;
   }
   
   export { Item };

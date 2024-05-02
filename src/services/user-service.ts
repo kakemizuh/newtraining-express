@@ -5,8 +5,6 @@ import { User } from "../interfaces/user";
 import { Item } from "../interfaces/item";
 import { UserItem } from "../interfaces/useritem";
 import { PoolConnection } from "mysql2/promise";
-import { UserController } from "../controllers";
-import { error } from "console";
 
 /**
  * usersテーブルのレコードを全件取得する
@@ -79,14 +77,14 @@ const addItem = async (
   dbConnection: PoolConnection
 ): Promise<number> => {
   //userデータの存在チェック
-  const userdata = await userModel.getUser(addUserItem.userId!, dbConnection);
-  if(userdata === undefined){
-    throw new Error("no userdata");
+  const userData = await userModel.getUser(addUserItem.userId!, dbConnection);
+  if(userData === undefined){
+    throw new Error("no userData");
   }
   //itemデータの存在チェック
-  const itemdata = await itemModel.getItem(addUserItem.itemId!, dbConnection);
-  if(itemdata === undefined){
-    throw new Error("no itemdata");
+  const itemData = await itemModel.getItem(addUserItem.itemId!, dbConnection);
+  if(itemData === undefined){
+    throw new Error("no itemData");
   }
   let result = addUserItem.itemCount!;
   //useritemデータの存在チェック
@@ -128,21 +126,21 @@ const useItem = async (
     itemCount: count,
   };
   //userデータの存在チェック
-  const userData = await userModel.txgetUser(userId, dbConnection);
+  const userData = await userModel.txGetUser(userId, dbConnection);
   if(userData === undefined){
-    throw new Error("no userdata");
+    throw new Error("no userData");
   }
   //itemデータの存在チェック
   const itemData = await itemModel.getItem(itemId, dbConnection);
   if(itemData === undefined){
-    throw new Error("no itemdata");
+    throw new Error("no itemData");
   }
   //itemtypeによってステータスを格納
   let status: number = 0;
-  if(itemData.itemtype === ITEMTYPE_HP_POTION){
+  if(itemData.itemType === ITEMTYPE_HP_POTION){
     status = userData.hp!;
   }
-  else if(itemData.itemtype === ITEMTYPE_MP_POTION){
+  else if(itemData.itemType === ITEMTYPE_MP_POTION){
     status = userData.mp!;
   }
   //useritemデータの存在チェック
@@ -172,10 +170,10 @@ const useItem = async (
   userItemData.itemCount! -= useItemCount;
 
   //算出したステータスの値を、アイテムタイプによって決まるステータスに格納
-  if(itemData.itemtype === ITEMTYPE_HP_POTION){
+  if(itemData.itemType === ITEMTYPE_HP_POTION){
     userData.hp = status;
   }
-  else if(itemData.itemtype === ITEMTYPE_MP_POTION){
+  else if(itemData.itemType === ITEMTYPE_MP_POTION){
     userData.mp = status;
   }
 
@@ -192,7 +190,7 @@ const useItem = async (
   await userModel.updateUser(userData.id!, userData, dbConnection);
 
   const result = {
-    itemid:itemData.id!, count:userItemData.itemCount!,
+    itemId:itemData.id!, count:userItemData.itemCount!,
     player:{id:userData.id!, hp:userData.hp!, mp:userData.mp!}
   };
 
@@ -212,9 +210,9 @@ const useGacha = async (
 ): Promise<any> => {
   const PRICE: number = 10;
   //userデータの存在チェック
-  const userData = await userModel.txgetUser(userId, dbConnection);
+  const userData = await userModel.txGetUser(userId, dbConnection);
   if(userData === undefined){
-    throw new Error("no userdata");
+    throw new Error("no userData");
   }
   //ガチャに使用するお金が足りているかチェック
   if(userData.money! < PRICE * count){
@@ -223,7 +221,7 @@ const useGacha = async (
   //itemデータの存在チェック
   const Items:Item[] = await itemModel.getAllItems(dbConnection);
   if(Items.length === 0){
-    throw new Error("no itemdata");
+    throw new Error("no itemData");
   }
   let percentNum = 0;
   Items.forEach((item) => {

@@ -59,7 +59,7 @@ const getUser = async (
  * @param dbConnection 
  * @returns User
  */
-const txgetUser = async (
+const txGetUser = async (
   req: number,
   dbConnection: PoolConnection
 ): Promise<User> => {
@@ -131,4 +131,4 @@ const deleteUser = async (
   );
 };
 
-export { getAllUsers, getUser, txgetUser, createUser, updateUser, deleteUser};
+export { getAllUsers, getUser, txGetUser, createUser, updateUser, deleteUser};

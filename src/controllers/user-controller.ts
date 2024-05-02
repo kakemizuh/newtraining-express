@@ -2,7 +2,6 @@ import { Response, Request, NextFunction } from "express";
 import { getAllUsers, getUser, createUser, updateUser, deleteUser, addItem, useItem, useGacha} from "../services/user-service";
 import { dbPool, transactionHelper } from "../helpers/db-helper";
 import { User } from "../interfaces/user";
-import { Item } from "../interfaces/item";
 import { UserItem } from "../interfaces/useritem";
 export class UserController {
   /**
@@ -19,8 +18,7 @@ export class UserController {
     const dbConnection = await dbPool.getConnection();
     try {
       const result = await getAllUsers(dbConnection);
-      res.status(200);
-      res.json(result);
+      res.status(200).json(result);
     } catch (e) {
       next(e);
     } finally {
@@ -42,8 +40,7 @@ export class UserController {
     const dbConnection = await dbPool.getConnection();
     try {
       const result = await getUser(Number(req.params.id),dbConnection);
-      res.status(200);
-      res.json(result);
+      res.status(200).json(result);
     } catch (e) {
       next(e);
     } finally {
@@ -134,8 +131,7 @@ export class UserController {
       await updateUser(Number(req.params.id), user, dbConnection);
 
       await dbConnection.commit();
-      res.status(200);
-      res.json({message:"success"});
+      res.status(200).json({message:"success"});
     } catch (e) {
       await dbConnection.rollback();
       next(e);
@@ -164,7 +160,6 @@ export class UserController {
     const dbConnection = await dbPool.getConnection();
     try {
       await dbConnection.beginTransaction();
-      let result:string = "";
       await deleteUser(Number(req.params.id), dbConnection);
       await dbConnection.commit();
       res.status(200).json({ message: "success" });
@@ -191,9 +186,9 @@ export class UserController {
     const userId: number = Number(req.params.id);
     const itemId: number = req.body.itemId;
     const count: number = req.body.count;
-    //useridが数字であるかチェック
+    //userIdが数字であるかチェック
     if(isNaN(userId)){
-      res.status(400).json({ message: "error:userid not number" });
+      res.status(400).json({ message: "error:userId not number" });
       return;
     }
     //リクエストボディに必要な値があるかチェック
@@ -204,9 +199,9 @@ export class UserController {
       res.status(400).json({ message: "Invalid parameters or body." });
       return;
     }
-    //itemidが数字であるかチェック
+    //itemIdが数字であるかチェック
     if(isNaN(itemId)){
-      res.status(400).json({ message: "error:itemid not number" });
+      res.status(400).json({ message: "error:itemId not number" });
       return;
     }
     //countが数字であるかチェック
@@ -215,7 +210,7 @@ export class UserController {
       return;
     }
 
-    const adduseritem: UserItem = {
+    const addUserItem: UserItem = {
       userId: userId,
       itemId: itemId,
       itemCount: count,
@@ -226,11 +221,10 @@ export class UserController {
       await dbConnection.beginTransaction(); 
 
       //アイテムを増加
-      const result = await addItem(adduseritem, dbConnection);
+      const result = await addItem(addUserItem, dbConnection);
 
       await dbConnection.commit();
-      res.status(200);
-      res.json({itemid:itemId, count:result});
+      res.status(200).json({itemId:itemId, count:result});
     } catch (e) {
       await dbConnection.rollback();
       next(e);
@@ -251,26 +245,26 @@ export class UserController {
     res: Response,
     next: NextFunction
   ): Promise<void> {
-    const userid: number = Number(req.params.id);
-    const itemid: number = req.body.itemId;
+    const userId: number = Number(req.params.id);
+    const itemId: number = req.body.itemId;
     const count: number = req.body.count;
 
-    //useridが数字であるかチェック
-    if(isNaN(userid)){
+    //userIdが数字であるかチェック
+    if(isNaN(userId)){
       res.status(400).json({ message: "error:id not number" });
       return;
     }
     //リクエストボディに必要な値があるかチェック
     if (
-      !itemid ||
+      !itemId ||
       !count
     ) {
       res.status(400).json({ message: "Invalid parameters or body." });
       return;
     }
-    //itemidが数字であるかチェック
-    if(isNaN(itemid)){
-      res.status(400).json({ message: "error:itemid not number" });
+    //itemIdが数字であるかチェック
+    if(isNaN(itemId)){
+      res.status(400).json({ message: "error:itemId not number" });
       return;
     }
     //countが数字であるかチェック
@@ -281,11 +275,10 @@ export class UserController {
     const dbConnection = await dbPool.getConnection();
     try {
       //アイテムを使用
-      const result = await useItem(userid, itemid, count, dbConnection);
+      const result = await useItem(userId, itemId, count, dbConnection);
       
       await dbConnection.commit();
-      res.status(200);
-      res.json(result);
+      res.status(200).json(result);
     } catch (e) {
       await dbConnection.rollback();
       next(e);
