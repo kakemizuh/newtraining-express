@@ -26,7 +26,7 @@ const getAllUsers = async (dbConnection: PoolConnection): Promise<User[]> => {
   return result;
 };
 /**
- * 指定したuseridのレコードを１件取得する
+ * 指定したuserIdのレコードを１件取得する
  * @param req 
  * @param dbConnection 
  * @returns User
@@ -54,7 +54,7 @@ const getUser = async (
   return result[0];
 };
 /**
- * 指定したuseridのレコードを１件取得し、行ロックをかける
+ * 指定したuserIdのレコードを１件取得し、行ロックをかける
  * @param req 
  * @param dbConnection 
  * @returns User
@@ -101,7 +101,7 @@ const createUser = async (
   return rows.insertId;
 };
 /**
- * 指定したuseridのレコードを更新する
+ * 指定したuserIdのレコードを更新する
  * @param req 
  * @param data 
  * @param dbConnection 
@@ -117,7 +117,7 @@ const updateUser = async (
   );
 };
 /**
- * 指定したuseridのレコードを削除する
+ * 指定したuserIdのレコードを削除する
  * @param req 
  * @param dbConnection 
  */
