@@ -18,16 +18,16 @@ const getAllItems = async (dbConnection: PoolConnection): Promise<Item[]> => {
       return {
         id: row.id,
         name: row.name,
-        heal: row.password,
-        price: row.money,
+        heal: row.heal,
+        price: row.price,
         percent: row.percent,
-        itemtype: row.hp,
+        itemType: row.itemType,
       };
     });
     return result;
   };
   /**
-   * 指定したitemidのレコードを取得する
+   * 指定したitemIdのレコードを取得する
    * @param req 
    * @param dbConnection 
    * @returns Item
@@ -48,7 +48,7 @@ const getAllItems = async (dbConnection: PoolConnection): Promise<Item[]> => {
           heal: row.heal,
           price: row.price,
           percent: row.percent,
-          itemtype: row.itemtype,
+          itemType: row.itemType,
         };
       });
   

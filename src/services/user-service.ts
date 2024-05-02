@@ -87,7 +87,7 @@ const addItem = async (
     throw new Error("no itemData");
   }
   let result = addUserItem.itemCount!;
-  //useritemデータの存在チェック
+  //userItemデータの存在チェック
   let userItemData = await userItemModel.getUserItem(addUserItem, dbConnection);
   if(userItemData === undefined){
     //レコードが存在しない場合作成する
@@ -143,7 +143,7 @@ const useItem = async (
   else if(itemData.itemType === ITEMTYPE_MP_POTION){
     status = userData.mp!;
   }
-  //useritemデータの存在チェック
+  //userItemデータの存在チェック
   let userItemData = await userItemModel.getUserItem(useUserItem, dbConnection);
   if(userItemData === undefined){
     throw new Error("no item");
@@ -177,7 +177,7 @@ const useItem = async (
     userData.mp = status;
   }
 
-  //useritemデータの値を更新する
+  //userItemデータの値を更新する
   //0個になった場合はテーブルを削除する
   if(userItemData.itemCount === 0){
     await userItemModel.deleteUserItem(userItemData.userId!, userItemData.itemId!, dbConnection);

@@ -3,18 +3,18 @@ import { UserItem } from "../interfaces/useritem";
 import { RowDataPacket, OkPacket } from "mysql2";
 
 /**
- * 指定したuserのuseritemの情報を取得する
+ * 指定したuserのuserItemの情報を取得する
  * 
  * @param dbConnection 
  * @returns usersテーブルの全レコード
  */
 const getUserItems = async (
-  userid: number,
+  userId: number,
   dbConnection: PoolConnection
 ): Promise<UserItem[]> => {
   const [rows] = await dbConnection.query<RowDataPacket[]>(
-    "SELECT * FROM `useritems` WHERE `userid` = ?;",
-    [userid]
+    "SELECT * FROM `userItems` WHERE `userId` = ?;",
+    [userId]
   );
 
   const result: UserItem[] = rows.map((row) => {
@@ -37,15 +37,15 @@ const getUserItem = async (
     dbConnection: PoolConnection
   ): Promise<UserItem> => {
     const [rows] = await dbConnection.query<RowDataPacket[]>(
-      "SELECT * FROM `useritems` WHERE `userid` = ? AND `itemid` = ? LIMIT 1;",
+      "SELECT * FROM `userItems` WHERE `userId` = ? AND `itemId` = ? LIMIT 1;",
       [data.userId,data.itemId]
     );
   
     const result:UserItem[] = rows.map((row) => {
       return {
-        userId: row.userid,
-        itemId: row.itemid,
-        itemCount: row.itemcount,
+        userId: row.userId,
+        itemId: row.itemId,
+        itemCount: row.itemCount,
       };
     });
   
@@ -53,7 +53,7 @@ const getUserItem = async (
   };
   
   /**
-   * 新規useritemのレコードを作成し、idを返す
+   * 新規userItemのレコードを作成し、idを返す
    * 
    * @param data 
    * @param dbConnection 
@@ -64,14 +64,14 @@ const getUserItem = async (
     dbConnection: PoolConnection
   ): Promise<number> => {
     const [rows] = await dbConnection.query<OkPacket>(
-      "INSERT INTO `useritems` (`userid`, `itemid`, `itemcount`) VALUES (?,?,?);",
+      "INSERT INTO `userItems` (`userId`, `itemId`, `itemCount`) VALUES (?,?,?);",
       [data.userId, data.itemId, data.itemCount]
     );
   
     return rows.insertId;
   };
   /**
-   * useritemのレコードを更新する
+   * userItemのレコードを更新する
    * @param data 
    * @param dbConnection 
    */
@@ -80,24 +80,24 @@ const getUserItem = async (
     dbConnection: PoolConnection
   ): Promise<void> => {
     const [rows] = await dbConnection.query<RowDataPacket[]>(
-      "UPDATE `useritems` SET `itemcount` = ? WHERE `userid` = ? AND `itemid` = ?;",
+      "UPDATE `userItems` SET `itemCount` = ? WHERE `userId` = ? AND `itemId` = ?;",
       [data.itemCount, data.userId, data.itemId]
     );
   };
   /**
-   * 指定したuseridとitemidのuseritemのレコードを削除する
-   * @param userid 
-   * @param itemid 
+   * 指定したuserIdとitemIdのuserItemのレコードを削除する
+   * @param userId 
+   * @param itemId 
    * @param dbConnection 
    */
   const deleteUserItem = async (
-    userid: number,
-    itemid: number,
+    userId: number,
+    itemId: number,
     dbConnection: PoolConnection
   ): Promise<void> => {
     const [rows] = await dbConnection.query<OkPacket>(
-      "DELETE FROM `useritems` WHERE `userid` = ? AND `itemid` = ?;",
-      [userid,itemid]
+      "DELETE FROM `userItems` WHERE `userId` = ? AND `itemId` = ?;",
+      [userId,itemId]
     );
   };
 
