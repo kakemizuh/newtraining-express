@@ -19,9 +19,9 @@ const getUserItems = async (
 
   const result: UserItem[] = rows.map((row) => {
     return {
-      userid: row.id,
-      itemid: row.name,
-      itemcount: row.password
+      userId: row.id,
+      itemId: row.name,
+      itemCount: row.password
     };
   });
   return result;
@@ -38,14 +38,14 @@ const getUserItem = async (
   ): Promise<UserItem> => {
     const [rows] = await dbConnection.query<RowDataPacket[]>(
       "SELECT * FROM `useritems` WHERE `userid` = ? AND `itemid` = ? LIMIT 1;",
-      [data.userid,data.itemid]
+      [data.userId,data.itemId]
     );
   
     const result:UserItem[] = rows.map((row) => {
       return {
-        userid: row.userid,
-        itemid: row.itemid,
-        itemcount: row.itemcount,
+        userId: row.userid,
+        itemId: row.itemid,
+        itemCount: row.itemcount,
       };
     });
   
@@ -65,7 +65,7 @@ const getUserItem = async (
   ): Promise<number> => {
     const [rows] = await dbConnection.query<OkPacket>(
       "INSERT INTO `useritems` (`userid`, `itemid`, `itemcount`) VALUES (?,?,?);",
-      [data.userid, data.itemid, data.itemcount]
+      [data.userId, data.itemId, data.itemCount]
     );
   
     return rows.insertId;
@@ -81,7 +81,7 @@ const getUserItem = async (
   ): Promise<void> => {
     const [rows] = await dbConnection.query<RowDataPacket[]>(
       "UPDATE `useritems` SET `itemcount` = ? WHERE `userid` = ? AND `itemid` = ?;",
-      [data.itemcount, data.userid, data.itemid]
+      [data.itemCount, data.userId, data.itemId]
     );
   };
   /**

@@ -1,7 +1,7 @@
 interface UserItem {
-    userid?: number;
-    itemid?: number;
-    itemcount?: number;
+    userId?: number;
+    itemId?: number;
+    itemCount?: number;
   }
   
   export { UserItem };

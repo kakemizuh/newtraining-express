@@ -4,9 +4,6 @@ import { dbPool, transactionHelper } from "../helpers/db-helper";
 import { User } from "../interfaces/user";
 import { Item } from "../interfaces/item";
 import { UserItem } from "../interfaces/useritem";
-import { getAllItems, getItem } from "../models/item-model";
-import { getUserItems, getUserItem } from "../models/useritem-model";
-
 export class UserController {
   /**
    * usersテーブルのレコードを全件取得する
@@ -168,9 +165,9 @@ export class UserController {
     try {
       await dbConnection.beginTransaction();
       let result:string = "";
-      result = await deleteUser(Number(req.params.id), dbConnection);
+      await deleteUser(Number(req.params.id), dbConnection);
       await dbConnection.commit();
-      res.status(200).json({ message: result });
+      res.status(200).json({ message: "success" });
     } catch (e) {
       await dbConnection.rollback();
       next(e);
@@ -191,34 +188,37 @@ export class UserController {
     res: Response,
     next: NextFunction
   ): Promise<void> {
+    const userId: number = Number(req.params.id);
+    const itemId: number = req.body.itemId;
+    const count: number = req.body.count;
     //useridが数字であるかチェック
-    if(isNaN(Number(req.params.id))){
+    if(isNaN(userId)){
       res.status(400).json({ message: "error:userid not number" });
       return;
     }
     //リクエストボディに必要な値があるかチェック
     if (
-      !req.body.itemid ||
-      !req.body.count
+      !itemId ||
+      !count
     ) {
       res.status(400).json({ message: "Invalid parameters or body." });
       return;
     }
     //itemidが数字であるかチェック
-    if(isNaN(req.body.itemid)){
+    if(isNaN(itemId)){
       res.status(400).json({ message: "error:itemid not number" });
       return;
     }
     //countが数字であるかチェック
-    if(isNaN(req.body.count)){
+    if(isNaN(count)){
       res.status(400).json({ message: "error:count not number" });
       return;
     }
 
     const adduseritem: UserItem = {
-      userid: Number(req.params.id),
-      itemid: req.body.itemid,
-      itemcount: req.body.count,
+      userId: userId,
+      itemId: itemId,
+      itemCount: count,
     };
 
     const dbConnection = await dbPool.getConnection();
@@ -230,7 +230,7 @@ export class UserController {
 
       await dbConnection.commit();
       res.status(200);
-      res.json({itemid:req.body.itemid, count:result});
+      res.json({itemid:itemId, count:result});
     } catch (e) {
       await dbConnection.rollback();
       next(e);
@@ -252,7 +252,7 @@ export class UserController {
     next: NextFunction
   ): Promise<void> {
     const userid: number = Number(req.params.id);
-    const itemid: number = req.body.itemid;
+    const itemid: number = req.body.itemId;
     const count: number = req.body.count;
 
     //useridが数字であるかチェック
@@ -293,16 +293,21 @@ export class UserController {
       dbConnection.release(); 
     }
   }
-
+  /**
+   * countの回数ガチャを引き、結果手に入れたアイテムを加算する
+   * @param req 
+   * @param res 
+   * @param next 
+   * @returns Response
+   */
   async useGacha(
     req: Request,
     res: Response,
     next: NextFunction
   ): Promise<void> {
-    const PRICE: number = 10;
-    const userid: number = Number(req.params.id);
+    const userId: number = Number(req.params.id);
     const count: number = req.body.count;
-    if(isNaN(userid)){
+    if(isNaN(userId)){
       res.status(400).json({ message: "error:id not number" });
       return;
     }
@@ -324,7 +329,7 @@ export class UserController {
       await dbConnection.beginTransaction();
       
 
-      const result = await useGacha(userid, count, PRICE, dbConnection);
+      const result = await useGacha(userId, count, dbConnection);
       await dbConnection.commit();
       res.status(200).json(result);
     } catch (e) {
