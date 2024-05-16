@@ -152,6 +152,10 @@ const useItem = async (
   if(userItemData.itemCount! < useUserItem.itemCount!){
     throw new Error("not enough item");
   }
+  //ユーザーのステータスがMAXかチェック
+  if(status >= STATUS_MAX_VALUE){
+    throw new Error("status is full");
+  }
 
   //アイテムを使用する個数を判定
   //プレイヤーに指定された個数を使用すると、最大値を超えてしまう場合
@@ -290,4 +294,29 @@ const useGacha = async (
   return result;
 }
 
-export { getAllUsers, getUser, createUser, updateUser ,deleteUser, addItem, useItem, useGacha};
+/**
+ * 指定したuserIdのusersテーブルを、itemIdとitemテーブルのidで結合して取得する
+ * @param userId
+ * @param dbConnection 
+ * @returns User[]
+ */
+const getUserItems = async (userId: number, dbConnection: PoolConnection): Promise<any[]> => {
+  const result = await userItemModel.getUserItemAndItem(userId, dbConnection);
+  return result;
+};
+
+/**
+ * idで指定したアイテムのレコードを取得する
+ * @param id 
+ * @param dbConnection 
+ * @returns User
+ */
+const getItem = async (
+  id: number,
+  dbConnection: PoolConnection
+): Promise<User> => {
+  const result: Item = await itemModel.getItem(id, dbConnection);
+  return result;
+}
+
+export { getAllUsers, getUser, createUser, updateUser ,deleteUser, addItem, useItem, useGacha, getUserItems, getItem};

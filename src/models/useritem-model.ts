@@ -19,9 +19,9 @@ const getUserItems = async (
 
   const result: UserItem[] = rows.map((row) => {
     return {
-      userId: row.id,
-      itemId: row.name,
-      itemCount: row.password
+      userId: row.userId,
+      itemId: row.itemId,
+      itemCount: row.itemCount
     };
   });
   return result;
@@ -101,4 +101,36 @@ const getUserItem = async (
     );
   };
 
-export { getUserItems, getUserItem, createUserItem, updateUserItem, deleteUserItem};
+  /**
+   * 指定したuserIdのusersテーブルを、itemIdとitemテーブルのidで結合して取得する
+   * @param userId 
+   * @param dbConnection 
+   * @returns 
+   */
+  const getUserItemAndItem = async (
+    userId: number,
+    dbConnection: PoolConnection
+  ): Promise<any> => {
+    const [rows] = await dbConnection.query<RowDataPacket[]>(
+      "SELECT * FROM `userItems` left JOIN `items` on userItems.itemId = items.id WHERE userItems.userId = ?;",
+      [userId]
+    )
+
+    const result: any[] = rows.map((row) => {
+      return {
+        userId: row.userId,
+        itemId: row.itemId,
+        itemCount: row.itemCount,
+        item:{
+        id: row.id,
+        name: row.name,
+        heal: row.heal,
+        price: row.price,
+        percent: row.percent,
+        itemType: row.itemType,
+      }};
+    });
+    return result;
+  }
+
+export { getUserItems, getUserItem, createUserItem, updateUserItem, deleteUserItem, getUserItemAndItem};

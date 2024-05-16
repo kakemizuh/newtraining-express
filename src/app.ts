@@ -53,6 +53,7 @@ if (app.get("env") === "development") {
     //   message: err.message,
     //   error: err
     // });
+    res.json({message: err.message});
     res.send();
   });
 }

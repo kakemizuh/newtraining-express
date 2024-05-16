@@ -14,3 +14,5 @@ router.delete("/:id", userController.deleteUser);
 router.post("/:id/addItem", userController.addItem);
 router.post("/:id/useItem", userController.useItem);
 router.post("/:id/useGacha", userController.useGacha);
+router.get("/:id/getUserItems", userController.getUserItems);
+router.get("/:id/getItem", userController.getItem);
