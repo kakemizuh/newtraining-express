@@ -5,7 +5,6 @@ import { User } from "../interfaces/user";
 import { Item } from "../interfaces/item";
 import { UserItem } from "../interfaces/useritem";
 import { PoolConnection } from "mysql2/promise";
-import { stat } from "fs";
 
 /**
  * usersテーブルのレコードを全件取得する
@@ -153,7 +152,7 @@ const useItem = async (
   if(userItemData.itemCount! < useUserItem.itemCount!){
     throw new Error("not enough item");
   }
-  //ユーザーのステータスがMAXでないかチェック
+  //ユーザーのステータスがMAXかチェック
   if(status >= STATUS_MAX_VALUE){
     throw new Error("status is full");
   }
