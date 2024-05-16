@@ -1,5 +1,5 @@
 import { Response, Request, NextFunction } from "express";
-import { getAllUsers, getUser, createUser, updateUser, deleteUser, addItem, useItem, useGacha} from "../services/user-service";
+import { getAllUsers, getUser, createUser, updateUser, deleteUser, addItem, useItem, useGacha, getUserItems, getItem} from "../services/user-service";
 import { dbPool, transactionHelper } from "../helpers/db-helper";
 import { User } from "../interfaces/user";
 import { UserItem } from "../interfaces/useritem";
@@ -327,6 +327,49 @@ export class UserController {
       res.status(200).json(result);
     } catch (e) {
       await dbConnection.rollback();
+      next(e);
+    } finally {
+      dbConnection.release(); 
+    }
+  }
+
+  async getUserItems(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    const dbConnection = await dbPool.getConnection();
+    const userId: number = Number(req.params.id);
+    if(isNaN(userId)){
+      res.status(400).json({ message: "error:id not number" });
+      return;
+    }
+    try {
+      const result = await getUserItems(userId, dbConnection);
+      res.status(200).json(result);
+    } catch (e) {
+      next(e);
+    } finally {
+      dbConnection.release(); 
+    }
+  }
+
+  /**
+   * usersテーブルからidで指定したレコードを１件取得する
+   * @param req 
+   * @param res 
+   * @param next 
+   */
+  async getItem(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    const dbConnection = await dbPool.getConnection();
+    try {
+      const result = await getItem(Number(req.params.id),dbConnection);
+      res.status(200).json(result);
+    } catch (e) {
       next(e);
     } finally {
       dbConnection.release(); 
